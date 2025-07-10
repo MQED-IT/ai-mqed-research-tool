@@ -59,7 +59,7 @@ export const InputForm: React.FC<InputFormProps> = ({
           value={internalInputValue}
           onChange={(e) => setInternalInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask a question, and I will research it for you!"
+          placeholder="Ask something, and I will research it for you!"
           className={`w-full text-neutral-100 placeholder-neutral-500 resize-none border-0 focus:outline-none focus:ring-0 outline-none focus-visible:ring-0 shadow-none
                         md:text-base  min-h-[56px] max-h-[200px]`}
           rows={1}
