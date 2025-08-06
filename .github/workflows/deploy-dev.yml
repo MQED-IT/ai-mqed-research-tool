@@ -6,7 +6,7 @@ on:
       - dev
 
 env:
-  PROJECT_ID: mqed-ai-research-tool
+  PROJECT_ID: mqed-ai-research-tool-466620
   GKE_CLUSTER: mqed-ai-research-tool-dev
   GKE_ZONE_OR_REGION: us-central1-a
   IMAGE_NAME: mqed-research-tool
