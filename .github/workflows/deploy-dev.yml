@@ -7,8 +7,8 @@ on:
 
 env:
   PROJECT_ID: mqed-ai-research-tool-466620
-  GKE_CLUSTER: mqed-ai-research-tool-dev
-  GKE_ZONE_OR_REGION: us-central1-a
+  # GKE_CLUSTER: mqed-ai-research-tool-dev
+  # GKE_ZONE_OR_REGION: us-central1-a
   IMAGE_NAME: mqed-research-tool
   IMAGE_TAG: ${{ github.sha }}
   DEPLOYMENT_NAME: mqed-research-tool-dev
@@ -45,12 +45,12 @@ jobs:
       - name: Push Docker Image to GCR
         run: docker push us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
-      - name: Get GKE Credentials
-        uses: google-github-actions/get-gke-credentials@v2
-        with:
-          cluster_name: ${{ env.GKE_CLUSTER }}
-          location: ${{ env.GKE_ZONE_OR_REGION }}
-          project_id: ${{ env.PROJECT_ID }}
+      # - name: Get GKE Credentials
+      #   uses: google-github-actions/get-gke-credentials@v2
+      #   with:
+      #     cluster_name: ${{ env.GKE_CLUSTER }}
+      #     location: ${{ env.GKE_ZONE_OR_REGION }}
+      #     project_id: ${{ env.PROJECT_ID }}
 
       - name: Deploy to Cloud Run (Dev)
         run: |
