@@ -59,7 +59,9 @@ jobs:
             --region=us-central1 \
             --platform=managed \
             --allow-unauthenticated \
-            --port=${{ env.CONTAINER_PORT }}
+            --port=${{ env.CONTAINER_PORT }} \
+            --set-env-vars GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},LANGSMITH_API_KEY=${{ secrets.LANGSMITH_API_KEY }}
+
 
       - name: Get Cloud Run URL
         id: get-url
