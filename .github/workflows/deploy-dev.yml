@@ -49,7 +49,7 @@ jobs:
         uses: google-github-actions/get-gke-credentials@v2
         with:
           cluster_name: ${{ env.GKE_CLUSTER }}
-          zone: ${{ env.GKE_ZONE_OR_REGION }}
+          location: ${{ env.GKE_ZONE_OR_REGION }}
           project_id: ${{ env.PROJECT_ID }}
 
       - name: Deploy to Development GKE
