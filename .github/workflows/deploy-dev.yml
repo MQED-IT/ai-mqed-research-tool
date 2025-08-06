@@ -67,4 +67,5 @@ jobs:
           echo "url=$(gcloud run services describe ${{ env.DEPLOYMENT_NAME }} --platform=managed --region=us-central1 --format='value(status.url)')" >> $GITHUB_OUTPUT
 
       - name: Output service URL
-        run: echo "Cloud Run service URL: ${{ steps.get-url.outputs.url }}"
+        run: |
+          echo "Cloud Run service URL: ${{ steps.get-url.outputs.url }}"
