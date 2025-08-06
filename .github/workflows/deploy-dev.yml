@@ -52,10 +52,19 @@ jobs:
           location: ${{ env.GKE_ZONE_OR_REGION }}
           project_id: ${{ env.PROJECT_ID }}
 
-      - name: Deploy to Development GKE
+      - name: Deploy to Cloud Run (Dev)
         run: |
-          kubectl set image deployment/${{ env.DEPLOYMENT_NAME }} ${{ env.IMAGE_NAME }}=gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --record || \
-          kubectl create deployment ${{ env.DEPLOYMENT_NAME }} --image=gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --port=${{ env.CONTAINER_PORT }}
+          gcloud run deploy ${{ env.DEPLOYMENT_NAME }} \
+            --image=gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
+            --region=us-central1 \
+            --platform=managed \
+            --allow-unauthenticated \
+            --port=${{ env.CONTAINER_PORT }}
 
-          kubectl get service ${{ env.DEPLOYMENT_NAME }} &> /dev/null || \
-          kubectl expose deployment ${{ env.DEPLOYMENT_NAME }} --type=LoadBalancer --port=${{ env.SERVICE_PORT }} --target-port=${{ env.CONTAINER_PORT }}
+      - name: Get Cloud Run URL
+        id: get-url
+        run: |
+          echo "url=$(gcloud run services describe ${{ env.DEPLOYMENT_NAME }} --platform=managed --region=us-central1 --format='value(status.url)')" >> $GITHUB_OUTPUT
+
+      - name: Output service URL
+        run: echo "Cloud Run service URL: ${{ steps.get-url.outputs.url }}"
