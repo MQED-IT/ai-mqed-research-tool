@@ -12,6 +12,7 @@ env:
   IMAGE_NAME: mqed-research-tool
   IMAGE_TAG: ${{ github.sha }}
   DEPLOYMENT_NAME: mqed-research-tool-dev
+  ARTIFACT_REPOSITORY: mqed-ai-artifact-repository-docker
   CONTAINER_PORT: 8000
   SERVICE_PORT: 80
 
@@ -39,10 +40,10 @@ jobs:
         run: gcloud auth configure-docker us-central1-docker.pkg.dev
 
       - name: Build Docker Image
-        run: docker build -t us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/mqed-research-repo/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+        run: docker build -t us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
 
       - name: Push Docker Image to GCR
-        run: docker push us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/mqed-research-repo/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+        run: docker push us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
 
       - name: Get GKE Credentials
         uses: google-github-actions/get-gke-credentials@v2
