@@ -1,0 +1,64 @@
+name: Deploy to GKE (Main Branch)
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  PROJECT_ID: mqed-ai-research-tool
+  GKE_CLUSTER: mqed-ai-research-tool-prod
+  GKE_ZONE_OR_REGION: us-central1 # Regional cluster for prod
+  IMAGE_NAME: langgraph-api-prod
+  IMAGE_TAG: ${{ github.sha }}
+  DEPLOYMENT_NAME: langgraph-api-prod
+  CONTAINER_PORT: 8000
+  SERVICE_PORT: 80
+
+jobs:
+  # The build job is run on every push to 'main'
+  build_image:
+    name: Build and Push Docker Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_PROD_SA_KEY }}
+
+      - name: Authenticate Docker to Google Container Registry (GCR)
+        run: gcloud auth configure-docker
+
+      - name: Build Docker Image
+        run: docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+
+      - name: Push Docker Image to GCR
+        run: docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+  # The deploy job depends on the build job succeeding
+  deploy:
+    name: Deploy to Production
+    needs: build_image
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_PROD_SA_KEY }}
+
+      - name: Get GKE Credentials
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          zone: ${{ env.GKE_ZONE_OR_REGION }}
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Deploy to Production GKE
+        run: |
+          kubectl set image deployment/${{ env.DEPLOYMENT_NAME }} ${{ env.IMAGE_NAME }}=gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --record

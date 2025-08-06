@@ -1,0 +1,58 @@
+name: Deploy to GKE (Dev Branch)
+
+on:
+  push:
+    branches:
+      - dev
+
+env:
+  PROJECT_ID: mqed-ai-research-tool
+  GKE_CLUSTER: mqed-ai-research-tool-dev
+  GKE_ZONE_OR_REGION: us-central1-a # Zonal cluster for dev
+  IMAGE_NAME: langgraph-api-dev # Unique image name for dev
+  IMAGE_TAG: ${{ github.sha }}
+  DEPLOYMENT_NAME: langgraph-api-dev
+  CONTAINER_PORT: 8000
+  SERVICE_PORT: 80
+
+jobs:
+  build-and-deploy:
+    name: Build, Push, and Deploy to Development
+    runs-on: ubuntu-latest
+    environment: development # Links to your GitHub Environment for dev secrets/config
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ env.PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }} # Dev service account key
+
+      - name: Authenticate Docker to Google Container Registry (GCR)
+        run: gcloud auth configure-docker
+
+      - name: Build Docker Image
+        run: docker build -t gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
+
+      - name: Push Docker Image to GCR
+        run: docker push gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+
+      - name: Get GKE Credentials
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: ${{ env.GKE_CLUSTER }}
+          zone: ${{ env.GKE_ZONE_OR_REGION }}
+          project_id: ${{ env.PROJECT_ID }}
+
+      - name: Deploy to Development GKE
+        run: |
+          # Try to set image on existing deployment, otherwise create new deployment
+          kubectl set image deployment/${{ env.DEPLOYMENT_NAME }} ${{ env.IMAGE_NAME }}=gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --record || \
+          kubectl create deployment ${{ env.DEPLOYMENT_NAME }} --image=gcr.io/${{ env.PROJECT_ID }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} --port=${{ env.CONTAINER_PORT }}
+
+          # Expose the Deployment as a Service if it doesn't exist
+          kubectl get service ${{ env.DEPLOYMENT_NAME }} &> /dev/null || \
+          kubectl expose deployment ${{ env.DEPLOYMENT_NAME }} --type=LoadBalancer --port=${{ env.SERVICE_PORT }} --target-port=${{ env.CONTAINER_PORT }}
