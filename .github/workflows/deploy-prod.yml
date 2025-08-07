@@ -1,4 +1,4 @@
-name: Deploy to GKE (Master Branch)
+name: Deploy to CloudRun (Master Branch)
 
 on:
   push:
@@ -52,7 +52,7 @@ jobs:
         run: |
           echo "VITE_API_URL=${{ env.VITE_API_URL }}"
 
-      - name: Deploy to Cloud Run (Prod)
+      - name: Deploy to Cloud Run
         run: |
           gcloud run deploy ${{ env.DEPLOYMENT_NAME }} \
             --image=us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} \
@@ -60,7 +60,7 @@ jobs:
             --platform=managed \
             --allow-unauthenticated \
             --port=${{ env.CONTAINER_PORT }} \
-            --set-env-vars GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},LANGSMITH_API_KEY=${{ secrets.LANGSMITH_API_KEY }},POSTGRES_URI=${{ secrets.DATABASE_URI}},REDIS_URI=${{ secrets.REDIS_URI }},VITE_API_URL=${{ env.VITE_API_URL }}
+            --set-env-vars GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},LANGSMITH_API_KEY=${{ secrets.LANGSMITH_API_KEY }},POSTGRES_URI=${{ secrets.DATABASE_URI_PRD }},REDIS_URI=${{ secrets.REDIS_URI }},VITE_API_URL=${{ env.VITE_API_URL }}
 
       - name: Get Cloud Run URL
         id: get-url

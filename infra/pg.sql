@@ -5,3 +5,10 @@ GRANT USAGE ON SCHEMA public TO ai_research_tool_user_dev;
 GRANT CREATE ON SCHEMA public TO ai_research_tool_user_dev; -- For initial table creation
 GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO ai_research_tool_user_dev;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO ai_research_tool_user_dev;
+
+-- production database setup for ai_research_tool
+GRANT CONNECT ON DATABASE ai_research_tool_prd TO ai_research_tool_user_prd;
+GRANT USAGE ON SCHEMA public TO ai_research_tool_user_prd;
+GRANT CREATE ON SCHEMA public TO ai_research_tool_user_prd; -- For initial table creation
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO ai_research_tool_user_prd;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO ai_research_tool_user_prd;
