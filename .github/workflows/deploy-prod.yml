@@ -3,7 +3,7 @@ name: Deploy to CloudRun (Master Branch)
 on:
   push:
     branches:
-      - master
+      - main
       
 env:
   PROJECT_ID: mqed-ai-research-tool-466620
