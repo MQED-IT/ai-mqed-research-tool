@@ -60,7 +60,7 @@ jobs:
             --platform=managed \
             --allow-unauthenticated \
             --port=${{ env.CONTAINER_PORT }} \
-            --set-env-vars GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},LANGSMITH_API_KEY=${{ secrets.LANGSMITH_API_KEY }},POSTGRES_URI=${{ secrets.DATABASE_URI_DEV }},REDIS_URI=${{ secrets.REDIS_URI }},VITE_API_URL=${{ env.VITE_API_URL }}
+            --set-env-vars GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }},LANGSMITH_API_KEY=${{ secrets.LANGSMITH_API_KEY }},POSTGRES_URI=${{ secrets.DATABASE_URI }},REDIS_URI=${{ secrets.REDIS_URI }},VITE_API_URL=${{ env.VITE_API_URL }}
 
       - name: Get Cloud Run URL
         id: get-url
