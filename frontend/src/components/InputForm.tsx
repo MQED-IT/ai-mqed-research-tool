@@ -10,6 +10,34 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+type AIModel = {
+  id: string;
+  label: string;
+  icon: "zap" | "cpu";
+  iconColor: string;
+};
+
+const aiModels: AIModel[] = [
+  {
+    id: "gemini-2.5-flash",
+    label: "2.5 Flash",
+    icon: "zap",
+    iconColor: "text-orange-400",
+  },
+  {
+    id: "gemini-2.5-pro",
+    label: "2.5 Pro",
+    icon: "cpu",
+    iconColor: "text-purple-400",
+  },
+  {
+    id: "gemini-2.5-flash-lite",
+    label: "2.5 Flash-Light",
+    icon: "zap",
+    iconColor: "text-yellow-400",
+  },
+];
+
 // Updated InputFormProps
 interface InputFormProps {
   onSubmit: (inputValue: string, effort: string, model: string) => void;
@@ -26,7 +54,7 @@ export const InputForm: React.FC<InputFormProps> = ({
 }) => {
   const [internalInputValue, setInternalInputValue] = useState("");
   const [effort, setEffort] = useState("medium");
-  const [model, setModel] = useState("gemini-2.5-flash-preview-04-17");
+  const [model, setModel] = useState(aiModels[0].id);
 
   const handleInternalSubmit = (e?: React.FormEvent) => {
     if (e) e.preventDefault();
@@ -135,30 +163,22 @@ export const InputForm: React.FC<InputFormProps> = ({
                 <SelectValue placeholder="Model" />
               </SelectTrigger>
               <SelectContent className="bg-neutral-700 border-neutral-600 text-neutral-300 cursor-pointer">
-                <SelectItem
-                  value="gemini-2.0-flash"
-                  className="hover:bg-neutral-600 focus:bg-neutral-600 cursor-pointer"
-                >
-                  <div className="flex items-center">
-                    <Zap className="h-4 w-4 mr-2 text-yellow-400" /> 2.0 Flash
-                  </div>
-                </SelectItem>
-                <SelectItem
-                  value="gemini-2.5-flash-preview-04-17"
-                  className="hover:bg-neutral-600 focus:bg-neutral-600 cursor-pointer"
-                >
-                  <div className="flex items-center">
-                    <Zap className="h-4 w-4 mr-2 text-orange-400" /> 2.5 Flash
-                  </div>
-                </SelectItem>
-                <SelectItem
-                  value="gemini-2.5-pro-preview-05-06"
-                  className="hover:bg-neutral-600 focus:bg-neutral-600 cursor-pointer"
-                >
-                  <div className="flex items-center">
-                    <Cpu className="h-4 w-4 mr-2 text-purple-400" /> 2.5 Pro
-                  </div>
-                </SelectItem>
+                {aiModels.map((model) => (
+                  <SelectItem
+                    key={model.id}
+                    value={model.id}
+                    className="hover:bg-neutral-600 focus:bg-neutral-600 cursor-pointer"
+                  >
+                    <div className="flex items-center">
+                      {model.icon === "zap" ? (
+                        <Zap className={`h-4 w-4 mr-2 ${model.iconColor}`} />
+                      ) : (
+                        <Cpu className={`h-4 w-4 mr-2 ${model.iconColor}`} />
+                      )}
+                      {model.label}
+                    </div>
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
