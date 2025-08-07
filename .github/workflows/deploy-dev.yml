@@ -41,8 +41,8 @@ jobs:
         run: gcloud auth configure-docker us-central1-docker.pkg.dev
 
       - name: Build Docker Image
-        run: docker build \
-          --build-arg VITE_API_URL=${{ env.VITE_API_URL }} \
+        run: docker build
+          --build-arg VITE_API_URL=${{ env.VITE_API_URL }}
           -t us-central1-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.ARTIFACT_REPOSITORY }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} .
 
       - name: Push Docker Image to GCR
