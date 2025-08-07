@@ -1,4 +1,4 @@
-name: Deploy to CloudRun (Master Branch)
+name: Deploy to CloudRun (Main Branch)
 
 on:
   push:
