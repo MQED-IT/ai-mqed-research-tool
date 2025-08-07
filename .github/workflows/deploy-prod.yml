@@ -4,14 +4,14 @@ on:
   push:
     branches:
       - master
-
+      
 env:
   PROJECT_ID: mqed-ai-research-tool-466620
   # GKE_CLUSTER: mqed-ai-research-tool-dev
   # GKE_ZONE_OR_REGION: us-central1-a
   IMAGE_NAME: mqed-research-tool
   IMAGE_TAG: ${{ github.sha }}
-  DEPLOYMENT_NAME: mqed-research-tool-prod
+  DEPLOYMENT_NAME: mqed-research-tool-prd
   ARTIFACT_REPOSITORY: mqed-ai-artifact-repository-docker
   CONTAINER_PORT: 8000
   SERVICE_PORT: 80
