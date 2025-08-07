@@ -15,7 +15,7 @@ env:
   ARTIFACT_REPOSITORY: mqed-ai-artifact-repository-docker
   CONTAINER_PORT: 8000
   SERVICE_PORT: 80
-  VITE_API_URL: ${{ vars.VITE_API_URL_DEV }}
+  VITE_API_URL: ${{ vars.VITE_API_URL }}
 
 jobs:
   build_and_deploy:
