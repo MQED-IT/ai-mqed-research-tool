@@ -3,8 +3,8 @@ name: Deploy to CloudRun (Master Branch)
 on:
   push:
     branches:
-      - main
-
+      - master
+      
 env:
   PROJECT_ID: mqed-ai-research-tool-466620
   # GKE_CLUSTER: mqed-ai-research-tool-dev
