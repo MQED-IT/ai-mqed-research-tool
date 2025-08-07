@@ -1,6 +1,12 @@
 # Stage 1: Build React Frontend
 FROM node:20-alpine AS frontend-builder
 
+# Declare build arg
+ARG VITE_API_URL
+
+# Set it as an env var so Vite can access it
+ENV VITE_API_URL=$VITE_API_URL
+
 # Set working directory for frontend
 WORKDIR /app/frontend
 
